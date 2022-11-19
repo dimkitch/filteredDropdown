@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="dropdown.css" />
+  </head>
+  <body>
+    <section class="fetch-request">
+      <div class="container">
+        <div class="fetch-request__inner">
+          <div class="fetch-request__header">
+            <div class="dropdown-block">
+              <div class="dropdown-block__wrapper-field">
+                <input
+                  class="dropdown-block__field"
+                  data-register="filterbyid"
+                  type="text"
+                  placeholder="ID"
+                />
+              </div>
+              <ul
+                class="dropdown-block__list-id dropdown-block__list-id--is-hidden"
+              ></ul>
+            </div>
+            <div class="dropdown-block">
+              <div class="dropdown-block__wrapper-field">
+                <input
+                  class="dropdown-block__field"
+                  data-register="filterbyuserid"
+                  type="text"
+                  placeholder="USER ID"
+                />
+              </div>
+              <ul
+                class="dropdown-block__list-userid dropdown-block__list-userid--is-hidden"
+              ></ul>
+            </div>
+          </div>
+          <div class="fetch-request__footer">
+            <div class="cards"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="index.js"></script>
+  </body>
+</html>

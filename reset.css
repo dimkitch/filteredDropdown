@@ -1,0 +1,105 @@
+*,
+:before,
+:after,
+p,
+a,
+button,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+ul,
+ol,
+li,
+input,
+form,
+div {
+  text-decoration: none;
+  outline: none;
+  border: none;
+  list-style-type: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Указываем box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Убираем внутренние отступы */
+ul,
+ol {
+  padding: 0;
+}
+
+/* Убираем внешние отступы */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+a:hover,
+a:focus,
+a:active {
+  text-decoration: unset;
+}
+/* убираем крестик у инпут */
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  display: none;
+}
+/* Запрещаем менять стиль кнопки submit в safar */
+input[type='submit'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Упрощаем работу с изображениями */
+img {
+  display: block;
+}
+
+/* Указываем понятную периодичность в потоке данных у article*/
+article > * + * {
+  margin-top: 1em;
+}
+
+/* Наследуем шрифты для инпутов и кнопок */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+textarea {
+  resize: none;
+  outline: none;
+  -moz-appearance: none;
+}
