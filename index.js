@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const createOptionNodes = (options, listNode) => {
-    console.log(listNode);
     createNode(options, listNode, (id) => {
       listNode.innerHTML += `
       <li class="dropdown-block__item" data-value="${id}">
@@ -157,9 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     createOptionNodes(filtered, listNode);
-
-    console.log('value:', value);
-    console.log('query:', query);
   }
 
   function closeAllDropDown() {
