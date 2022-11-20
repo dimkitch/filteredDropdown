@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterListUserIdNode = document.querySelector(
     '[data-class="list-user-id"]'
   );
-  let userList = [];
-  let idList = [];
+  window.userIdList = [];
+  window.idList = [];
 
   let state = [];
   let query = {};
@@ -36,21 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
     createCardNodes();
   }
 
-  function createNode(dataList, node, createTemplate) {
+  function createNode(dataList, node, createTemplateFn) {
     node.innerHTML = '';
-    dataList.forEach(createTemplate)
+    dataList.forEach(createTemplateFn);
   }
 
   const init = async () => {
     await getResponse();
 
-    userList = Array.from(new Set(state.map((item) => item.userId)));
+    userIdList = Array.from(new Set(state.map((item) => item.userId)));
     idList = state.map((item) => item.id);
 
     //Выводит все id в дропдаун
     createOptionNodes(idList, filterListIdNode);
     //Выводит все userId в дропдаун
-    createOptionNodes(userList, filterListUserIdNode);
+    createOptionNodes(userIdList, filterListUserIdNode);
   };
 
   const createCardNodes = () => {
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div></div>
     </div>
     `;
-    } )
+    });
   };
 
   const createOptionNodes = (options, listNode) => {
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ${id}
       </li>
       `;
-    })
+    });
 
     const filterListOptionsNode = listNode.querySelectorAll(
       '.dropdown-block__item'
@@ -97,8 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
   init();
 
   function toggleDropdown(e) {
+    closeAllDropDown();
     const dropdownNode = e.target.closest('.dropdown-block');
-    const list = dropdownNode.querySelector('.dropdown-block__list')
+    const list = dropdownNode.querySelector('.dropdown-block__list');
 
     if (list.classList.contains('dropdown-block__list--is-hidden')) {
       list.classList.remove('dropdown-block__list--is-hidden');
@@ -109,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //ФУНКЦИЯ, которая открывает DROPDOWN userID
   inputUserIdNode.addEventListener('click', toggleDropdown);
-  inputIdNode.addEventListener('click',toggleDropdown)
+  inputIdNode.addEventListener('click', toggleDropdown);
 
   //фУНКЦИЯ, которая обрабатывает клик по лишке
   function onSelectOption(e) {
@@ -118,9 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Получаем значение из выбранной лишки по аттрибуту -> data-value="ID" -> ID - текущий айди лишки
     const value = Number(e.target.getAttribute('data-value'));
     // Получаем ключ для записи в объект query у родителя лишки -> ul с аттр data-query-key="KEY" -> KEY - задан в штмл
-    const key = e.target.parentElement.getAttribute('data-query-key')
+    const key = e.target.parentElement.getAttribute('data-query-key');
     // Получаем инпут в текущем дропдауне
-    const inputNode = dropdownNode.querySelector('input')
+    const inputNode = dropdownNode.querySelector('input');
 
     inputNode.value = value;
     query[key] = value;
@@ -130,25 +131,43 @@ document.addEventListener('DOMContentLoaded', () => {
     closeAllDropDown();
     // обновляем данные после дёргание фильтра
     getResponse();
-
   }
 
   //фУНКЦИЯ, поиска
   inputIdNode.addEventListener('input', onSearchFilter);
+  inputUserIdNode.addEventListener('input', onSearchFilter);
+
   function onSearchFilter(e) {
     const value = e.target.value;
-    const filtered = idList.filter((item) => {
+    const dropdownNode = e.target.closest('.dropdown-block');
+    const listNode = dropdownNode.querySelector('.dropdown-block__list');
+    const key = listNode.getAttribute('data-query-key'); // id || userId
+
+    if (!value) {
+      delete query[key];
+      getResponse();
+    }
+
+    const keyList = `${key}List`;
+
+    const filtered = window[keyList].filter((item) => {
       if (String(item).includes(value)) {
         return item;
       }
     });
-    createOptionNodes(filtered, filterListIdNode);
+
+    createOptionNodes(filtered, listNode);
+
+    console.log('value:', value);
+    console.log('query:', query);
   }
 
   function closeAllDropDown() {
-    const dropdownListNodes =  document.querySelectorAll('.dropdown-block__list');
-    dropdownListNodes.forEach(list=>{
-      list.classList.add('dropdown-block__list--is-hidden')
-    })
+    const dropdownListNodes = document.querySelectorAll(
+      '.dropdown-block__list'
+    );
+    dropdownListNodes.forEach((list) => {
+      list.classList.add('dropdown-block__list--is-hidden');
+    });
   }
 });
