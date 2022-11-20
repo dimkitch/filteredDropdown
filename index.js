@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterListUserIdNode = document.querySelector(
     '.dropdown-block__list-userid'
   );
-  let userList = [];
   let idList = [];
+  let userList = [];
 
   let state = [];
   let query = {};
@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //Выводит все userId в дропдаун
   const createOptionsUserId = (options) => {
+    filterListUserIdNode.innerHTML = '';
     options.forEach((id) => {
       filterListUserIdNode.innerHTML += `
         <li class="dropdown-block__item" data-value="${id}">
@@ -113,8 +114,18 @@ document.addEventListener('DOMContentLoaded', () => {
   init();
 
   //ФУНКЦИЯ, которая открывает DROPDOWN ID
+  function toggleDropdown(node) {
+    if (node.classList.contains('.dropdown-block__list-id')) {
+      node.classList.add('dropdown-block__list-id--is-hidden');
+    }
+    if (node.classList.contains('.dropdown-block__list-userid')) {
+      node.classList.add('dropdown-block__list-userid--is-hidden');
+    } else {
+      node.classList.remove('dropdown-block__list-id--is-hidden');
+      node.classList.remove('dropdown-block__list-userid--is-hidden');
+    }
+  }
   inputIdNode.addEventListener('click', toggleDropdownId);
-
   function toggleDropdownId() {
     let list = document.querySelector('.dropdown-block__list-id');
     if (list.classList.contains('dropdown-block__list-id--is-hidden')) {
@@ -126,7 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //ФУНКЦИЯ, которая открывает DROPDOWN userID
   inputUserIdNode.addEventListener('click', toggleDropdownUserId);
-
   function toggleDropdownUserId() {
     let list = document.querySelector('.dropdown-block__list-userid');
     if (list.classList.contains('dropdown-block__list-userid--is-hidden')) {
@@ -153,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     getResponse();
   }
 
-  //фУНКЦИЯ, поиска
+  //фУНКЦИЯ, поиска id
   inputIdNode.addEventListener('input', filterOptionsId);
   function filterOptionsId(e) {
     const value = e.target.value;
@@ -165,4 +175,28 @@ document.addEventListener('DOMContentLoaded', () => {
     createOptionsId(filtered);
     console.log(filtered);
   }
+
+  //ФУНКЦИЯ, поиска userId
+  inputUserIdNode.addEventListener('input', filterOptionsUserId);
+  function filterOptionsUserId(e) {
+    const value = e.target.value;
+    const filtered = userList.filter((item) => {
+      if (String(item).includes(value)) {
+        return item;
+      }
+    });
+    createOptionsUserId(filtered);
+    console.log(filtered);
+  }
+
+  //ФУНКЦИЯ закрытия списка по клику на все остальное
+  // document.addEventListener('click', (e) => {
+  //   let target = e.target.classList;
+  //   if (target.contains('.dropdown-block')) {
+  //     return e;
+  //   } else {
+  //     toggleDropdownId();
+  //   }
+  //    if(e.target === )
+  // });
 });
