@@ -166,4 +166,28 @@ document.addEventListener('DOMContentLoaded', () => {
       list.classList.add('dropdown-block__list--is-hidden');
     });
   }
+
+  //ФУНКЦИЯ, поиска userId
+  inputUserIdNode.addEventListener('input', filterOptionsUserId);
+  function filterOptionsUserId(e) {
+    const value = e.target.value;
+    const filtered = userList.filter((item) => {
+      if (String(item).includes(value)) {
+        return item;
+      }
+    });
+    createOptionsUserId(filtered);
+    console.log(filtered);
+  }
+
+  //ФУНКЦИЯ закрытия списка по клику на все остальное
+  // document.addEventListener('click', (e) => {
+  //   let target = e.target.classList;
+  //   if (target.contains('.dropdown-block')) {
+  //     return e;
+  //   } else {
+  //     toggleDropdownId();
+  //   }
+  //    if(e.target === )
+  // });
 });
