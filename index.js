@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const value = e.target.value;
     const dropdownNode = e.target.closest('.dropdown-block');
     const listNode = dropdownNode.querySelector('.dropdown-block__list');
-    const key = listNode.getAttribute('data-query-key'); // id || userId
+    const key = listNode.getAttribute('data-query-key');
 
     if (!value) {
       delete query[key];
