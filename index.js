@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     '[data-register="filterbyuserid"]'
   );
   //Select список  ID
-  const filterListIdNode = document.querySelector('.dropdown-block__list-id');
+  const filterListIdNode = document.querySelector('[data-class="list-id"]');
   //Select список USERID
   const filterListUserIdNode = document.querySelector(
-    '.dropdown-block__list-userid'
+    '[data-class="list-user-id"]'
   );
   let userList = [];
   let idList = [];
@@ -29,13 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .join('');
   };
-  // console.log(transformQuery());
 
   async function getResponse() {
     let response = await fetch(URL + transformQuery());
-    // + query
     state = await response.json();
     createCardNodes();
+  }
+
+  function createNode(dataList, node, createTemplate) {
+    node.innerHTML = '';
+    dataList.forEach(createTemplate)
   }
 
   const init = async () => {
@@ -44,14 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
     userList = Array.from(new Set(state.map((item) => item.userId)));
     idList = state.map((item) => item.id);
 
-    createOptionsId(idList);
-    createOptionsUserId(userList);
+    //Выводит все id в дропдаун
+    createOptionNodes(idList, filterListIdNode);
+    //Выводит все userId в дропдаун
+    createOptionNodes(userList, filterListUserIdNode);
   };
 
   const createCardNodes = () => {
-    cardsNode.innerHTML = '';
-
-    state.forEach((card) => {
+    createNode(state, cardsNode, (card) => {
       cardsNode.innerHTML += `
       <div class="card">
       <div class="card__title">
@@ -69,100 +72,83 @@ document.addEventListener('DOMContentLoaded', () => {
       </div></div>
     </div>
     `;
-    });
+    } )
   };
 
-  //Выводит все id в дропдаун
-  const createOptionsId = (options) => {
-    filterListIdNode.innerHTML = '';
-    options.forEach((id) => {
-      filterListIdNode.innerHTML += `
+  const createOptionNodes = (options, listNode) => {
+    console.log(listNode);
+    createNode(options, listNode, (id) => {
+      listNode.innerHTML += `
       <li class="dropdown-block__item" data-value="${id}">
       ${id}
       </li>
       `;
-    });
+    })
 
-    const filterListIdOptionsNode = filterListIdNode.querySelectorAll(
+    const filterListOptionsNode = listNode.querySelectorAll(
       '.dropdown-block__item'
     );
-    filterListIdOptionsNode.forEach((optionNode) => {
-      optionNode.addEventListener('click', addFilterItemId);
-    });
-  };
-
-  //Выводит все userId в дропдаун
-  const createOptionsUserId = (options) => {
-    options.forEach((id) => {
-      filterListUserIdNode.innerHTML += `
-        <li class="dropdown-block__item" data-value="${id}">
-          ${id}
-        </li>
-      `;
-    });
-
-    const filterListUserIdOptionsNode = filterListUserIdNode.querySelectorAll(
-      '.dropdown-block__item'
-    );
-    filterListUserIdOptionsNode.forEach((optionNode) => {
-      optionNode.addEventListener('click', addFilterItemUserId);
+    filterListOptionsNode.forEach((optionNode) => {
+      optionNode.addEventListener('click', onSelectOption);
     });
   };
 
   //Вызов функии fetch
   init();
 
-  //ФУНКЦИЯ, которая открывает DROPDOWN ID
-  inputIdNode.addEventListener('click', toggleDropdownId);
+  function toggleDropdown(e) {
+    const dropdownNode = e.target.closest('.dropdown-block');
+    const list = dropdownNode.querySelector('.dropdown-block__list')
 
-  function toggleDropdownId() {
-    let list = document.querySelector('.dropdown-block__list-id');
-    if (list.classList.contains('dropdown-block__list-id--is-hidden')) {
-      list.classList.remove('dropdown-block__list-id--is-hidden');
+    if (list.classList.contains('dropdown-block__list--is-hidden')) {
+      list.classList.remove('dropdown-block__list--is-hidden');
     } else {
-      list.classList.add('dropdown-block__list-id--is-hidden');
+      list.classList.add('dropdown-block__list--is-hidden');
     }
   }
 
   //ФУНКЦИЯ, которая открывает DROPDOWN userID
-  inputUserIdNode.addEventListener('click', toggleDropdownUserId);
+  inputUserIdNode.addEventListener('click', toggleDropdown);
+  inputIdNode.addEventListener('click',toggleDropdown)
 
-  function toggleDropdownUserId() {
-    let list = document.querySelector('.dropdown-block__list-userid');
-    if (list.classList.contains('dropdown-block__list-userid--is-hidden')) {
-      list.classList.remove('dropdown-block__list-userid--is-hidden');
-    } else {
-      list.classList.add('dropdown-block__list-userid--is-hidden');
-    }
-  }
+  //фУНКЦИЯ, которая обрабатывает клик по лишке
+  function onSelectOption(e) {
+    // Получаем доступ к дропдауну через текущий таргет -> таргет это li по которой кликнули
+    const dropdownNode = e.target.closest('.dropdown-block');
+    // Получаем значение из выбранной лишки по аттрибуту -> data-value="ID" -> ID - текущий айди лишки
+    const value = Number(e.target.getAttribute('data-value'));
+    // Получаем ключ для записи в объект query у родителя лишки -> ul с аттр data-query-key="KEY" -> KEY - задан в штмл
+    const key = e.target.parentElement.getAttribute('data-query-key')
+    // Получаем инпут в текущем дропдауне
+    const inputNode = dropdownNode.querySelector('input')
 
-  //фУНКЦИЯ, которая выбирает выбраный item id
-  function addFilterItemId(e) {
-    const id = Number(e.target.getAttribute('data-value'));
-    inputIdNode.value = id;
-    query.id = id;
-    toggleDropdownId();
+    inputNode.value = value;
+    query[key] = value;
+
+    // закрываем дропдаун
+    // мы закрываем все дропдауны, но можно было сделать метод, который принимает node дропдауна, который нужно закрыть
+    closeAllDropDown();
+    // обновляем данные после дёргание фильтра
     getResponse();
-  }
-  //фУНКЦИЯ, которая выбирает выбраный item userId
-  function addFilterItemUserId(e) {
-    const userId = Number(e.target.getAttribute('data-value'));
-    inputUserIdNode.value = userId;
-    query.userId = userId;
-    toggleDropdownUserId();
-    getResponse();
+
   }
 
   //фУНКЦИЯ, поиска
-  inputIdNode.addEventListener('input', filterOptionsId);
-  function filterOptionsId(e) {
+  inputIdNode.addEventListener('input', onSearchFilter);
+  function onSearchFilter(e) {
     const value = e.target.value;
     const filtered = idList.filter((item) => {
       if (String(item).includes(value)) {
         return item;
       }
     });
-    createOptionsId(filtered);
-    console.log(filtered);
+    createOptionNodes(filtered, filterListIdNode);
+  }
+
+  function closeAllDropDown() {
+    const dropdownListNodes =  document.querySelectorAll('.dropdown-block__list');
+    dropdownListNodes.forEach(list=>{
+      list.classList.add('dropdown-block__list--is-hidden')
+    })
   }
 });
