@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterListUserIdNode = document.querySelector(
     '.dropdown-block__list-userid'
   );
-  let userList = [];
+  let userList1 = [];
   let idList = [];
 
   let state = [];
@@ -27,9 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const separator = i === 0 ? '?' : '&';
         return `${separator}${item[0]}=${item[1]}`;
       })
-      .join('');
+      .join('|');
   };
-  // console.log(transformQuery());
 
   async function getResponse() {
     let response = await fetch(URL + transformQuery());
@@ -96,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     options.forEach((id) => {
       filterListUserIdNode.innerHTML += `
         <li class="dropdown-block__item" data-value="${id}">
-          ${id}
+          ID:${id}
         </li>
       `;
     });
