@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .join('');
   };
-  // console.log(transformQuery());
 
   async function getResponse() {
     let response = await fetch(URL + transformQuery());
